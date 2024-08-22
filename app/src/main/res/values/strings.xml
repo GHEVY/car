@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">car</string>
+    <string name="oil">OIL</string>
+    <string name="filter">FILTER</string>
+    <string name="parts">AUTOPARTS</string>
+    <string name="add">ADD</string>
+    <string name="save">SAVE</string>
+    <string name="category">INPUT CATEGORY</string>
+    <string name="name">INPUT NAME</string>
+    <string name="count">INPUT COUNT</string>
+    <string name="buy_price">INPUT BUY PRICE</string>
+    <string name="sell_price">INPUT SELL PRICE</string>
+
+</resources>

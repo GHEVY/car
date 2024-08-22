@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">car</string>
+    <string name="oil">МАСЛО</string>
+    <string name="filter">ФИЛЬТР</string>
+    <string name="parts">АВТОЗАПЧАСТИ</string>
+    <string name="add">ДОБАВИТЬ</string>
+    <string name="save">СОХРАНИТЬ</string>
+    <string name="category">ВВЕДИТЕ КАТЕГОРИЮ</string>
+    <string name="name">ВВЕДИТЕ ИМЯ</string>
+    <string name="count">ВВЕДИТЕ КОЛИЧЕСТВО</string>
+    <string name="buy_price">ВВЕДИТЕ ЦЕНУ ПОКУПКИ</string>
+    <string name="sell_price">ВВЕДИТЕ ЦЕНУ ПРОДАЖИ</string>
+
+</resources>
