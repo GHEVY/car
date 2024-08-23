@@ -5,4 +5,7 @@ public enum DataType {
     OIL,
     FILTER,
     AUTOPARTS,
+    МАСЛО,
+    ФИЛЬТР,
+    АВТОЗАПЧАСТИ
 }

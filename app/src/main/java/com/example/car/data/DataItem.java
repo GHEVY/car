@@ -1,6 +1,5 @@
 package com.example.car.data;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,9 +8,7 @@ import androidx.annotation.NonNull;
 public class DataItem implements Parcelable {
     private DataType type;
     private String name;
-
     private String count;
-
     private String buyPrice;
     private  String sellPrice;
     private String category;
@@ -91,7 +88,6 @@ public class DataItem implements Parcelable {
     public void setSellPrice(String sellPrice) {
         this.sellPrice = sellPrice;
     }
-
     @Override
     public int describeContents() {
         return 0;

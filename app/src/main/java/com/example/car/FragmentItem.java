@@ -1,7 +1,6 @@
 package com.example.car;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +23,8 @@ public class FragmentItem extends Fragment {
     public FragmentItemBinding binding;
     private ArrayAdapter<String> adapter;
     public SharedViewModel model;
-
     private static final String KEY_TYPE = "key";
+    private AdapterView.OnItemSelectedListener onItemSelectedListener;
 
     public static FragmentItem newInstance(String type) {
         Bundle bundle = new Bundle();
@@ -34,7 +33,6 @@ public class FragmentItem extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,14 +44,30 @@ public class FragmentItem extends Fragment {
     public void onResume() {
         super.onResume();
         assert getArguments() != null;
-        Log.e("TAG", "resume   " + model.getType());
         updateAdapter();
-
     }
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                DataItem newItem = null;
+                newItem = model.getItems().valueAt(position);
+                if (newItem != null) {
+                    binding.count.setText(newItem.getCount());
+                    binding.price.setText(newItem.getSellPrice());
+                } else {
+                    binding.count.setText("");
+                    binding.price.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
     }
 
     @Override
@@ -62,31 +76,15 @@ public class FragmentItem extends Fragment {
         assert getArguments() != null;
         adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, find());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinner1.setAdapter(adapter);
-        binding.spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                DataItem newItem = null;
-                if (model.getType() != null) {
-                    newItem = model.getItems().valueAt(position);
-                }if (newItem != null) {
-                    binding.count.setText(newItem.getCount());
-                    binding.price.setText(newItem.getSellPrice());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        binding.spinner.setAdapter(adapter);
         binding.add.setOnClickListener(v -> {
             Fragment fragment = AddFragment.newInstance(model.getType().toString());
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
+            getParentFragmentManager().setFragmentResultListener("ADD", getViewLifecycleOwner(), fragmentResultListener);
         });
-        getParentFragmentManager().setFragmentResultListener("ADD", getViewLifecycleOwner(), fragmentResultListener);
     }
 
     private void updateAdapter() {
@@ -96,8 +94,8 @@ public class FragmentItem extends Fragment {
             adapter.clear();
             adapter.addAll(find());
             adapter.notifyDataSetChanged();
-            Log.e("TAG", "updateAdapter");
         }
+        binding.spinner.setOnItemSelectedListener(onItemSelectedListener);
     }
 
     private ArrayList<String> find() {

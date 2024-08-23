@@ -1,17 +1,16 @@
 package com.example.car;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.car.data.DataItem;
+import com.example.car.data.DataType;
 import com.example.car.databinding.FragmentAddBinding;
 import com.example.car.utils.AppTextSeparatedWatcher;
 
@@ -42,15 +41,21 @@ public class AddFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         assert getArguments() != null;
-        if (Objects.equals(getArguments().getString(ARG_KEY), "OIL")) {
+        if (Objects.equals(getArguments().getString(ARG_KEY), getString(R.string.oil))) {
             dataItem = new Oil();
-        } else if (Objects.equals(getArguments().getString(ARG_KEY), "FILTER")) {
+        } else if (Objects.equals(getArguments().getString(ARG_KEY), getString(R.string.filter))) {
             dataItem = new Filter();
-        } else if(Objects.equals(getArguments().getString(ARG_KEY), "AUTOPARTS")) {
+        } else if (Objects.equals(getArguments().getString(ARG_KEY), getString(R.string.parts))) {
             dataItem = new AutoParts();
         }
         binding.name.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setName(s.toString())));
-        binding.count.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setCount(s.toString() + "l")));
+        if (dataItem.getType().equals(DataType.OIL) || dataItem.getType().equals(DataType.МАСЛО)) {
+            binding.count.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setCount(s.toString() + "litr")));
+        }
+        else{
+            binding.count.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setCount(s.toString() + "hat")));
+
+        }
         binding.buy.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setBuyPrice(s.toString() + "$")));
         binding.sell.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setSellPrice(s.toString() + "$")));
         binding.category.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setCategory(s.toString())));

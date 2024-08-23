@@ -7,9 +7,6 @@
     tools:context=".AddFragment"
     android:background="@color/white">
 
-
-
-
     <Button
         android:id="@+id/save"
         android:layout_width="wrap_content"

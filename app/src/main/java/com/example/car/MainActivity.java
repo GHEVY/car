@@ -1,9 +1,6 @@
-
 package com.example.car;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -19,21 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public String[] names;
-    @SuppressLint("StaticFieldLeak")
-    public ActivityMainBinding binding;
-
-    public SharedViewModel model;
+    private String[] names;
+    private ActivityMainBinding binding;
+    private SharedViewModel model;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(this).get(SharedViewModel.class);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         names = new String[]{
                 getString(R.string.oil),
                 getString(R.string.filter),
@@ -60,5 +53,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }
