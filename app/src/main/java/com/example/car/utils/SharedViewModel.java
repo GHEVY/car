@@ -29,7 +29,7 @@ public class SharedViewModel extends ViewModel {
             return oilList;
         } else if (type.equals(DataType.FILTER) || type.equals(DataType.ФИЛЬТР)) {
             return filterList;
-        } else if (type.equals(DataType.AUTOPARTS) || type.equals(DataType.АВТОЗАПЧАСТИ) ){
+        } else if (type.equals(DataType.AUTOPARTS) || type.equals(DataType.АВТОЗАПЧАСТИ)){
             return partsList;
         }
         return  null;

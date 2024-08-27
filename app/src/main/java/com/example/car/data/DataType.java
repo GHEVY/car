@@ -2,7 +2,7 @@ package com.example.car.data;
 
 
 public enum DataType {
-    OIL,
+    OIL ,
     FILTER,
     AUTOPARTS,
     МАСЛО,

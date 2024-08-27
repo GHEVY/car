@@ -1,12 +1,19 @@
 package com.example.car;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,24 +21,52 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.car.data.DataItem;
+import com.example.car.data.DataType;
 import com.example.car.databinding.FragmentItemBinding;
 import com.example.car.utils.SharedViewModel;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.util.ArrayList;
 
 public class FragmentItem extends Fragment {
+    public SharedViewModel model;
     public FragmentItemBinding binding;
     private ArrayAdapter<String> adapter;
-    public SharedViewModel model;
-    private static final String KEY_TYPE = "key";
     private AdapterView.OnItemSelectedListener onItemSelectedListener;
 
-    public static FragmentItem newInstance(String type) {
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_TYPE, type);
-        FragmentItem fragment = new FragmentItem();
-        fragment.setArguments(bundle);
-        return fragment;
+    private final ActivityResultLauncher<Intent> qrScannerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        String resultContents = data.getStringExtra("SCAN_RESULT");
+                        if (resultContents != null) {
+                            Toast.makeText(requireContext(), resultContents, Toast.LENGTH_SHORT).show();
+                            binding.count.setText(resultContents);
+//                            Toast.makeText(requireContext(), "Scanned: " + resultContents, Toast.LENGTH_LONG).show();
+//                            String[] res = resultContents.split("\\r?\\n");
+//                            DataItem item = new DataItem();
+//                            item.setType(model.getType());
+//                            item.setName(res[0]);
+//                            item.setCount(res[1]);
+//                            item.setBuyPrice(res[2]);
+//                            item.setSellPrice(res[3]);
+//                            model.addItem(item);
+//                            updateAdapter();
+                        } else {
+                            Toast.makeText(requireContext(), "No data found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "No scan data received!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+    );
+
+
+    public static FragmentItem newInstance() {
+        return new FragmentItem();
     }
 
     @Override
@@ -43,21 +78,25 @@ public class FragmentItem extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        assert getArguments() != null;
         updateAdapter();
     }
 
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                DataItem newItem = null;
-                newItem = model.getItems().valueAt(position);
+                DataItem newItem = model.getItems().valueAt(position);
                 if (newItem != null) {
-                    binding.count.setText(newItem.getCount());
-                    binding.price.setText(newItem.getSellPrice());
+                    if (model.getType() == DataType.OIL || model.getType() == DataType.МАСЛО) {
+                        binding.count.setText(newItem.getCount() + "litr");
+                    } else {
+                        binding.count.setText(newItem.getCount() + "hat");
+                    }
+                    binding.price.setText(newItem.getSellPrice() + "$");
                 } else {
                     binding.count.setText("");
                     binding.price.setText("");
@@ -73,7 +112,6 @@ public class FragmentItem extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        assert getArguments() != null;
         adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, find());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinner.setAdapter(adapter);
@@ -84,6 +122,15 @@ public class FragmentItem extends Fragment {
                     .addToBackStack(null)
                     .commit();
             getParentFragmentManager().setFragmentResultListener("ADD", getViewLifecycleOwner(), fragmentResultListener);
+        });
+        binding.addByQr.setOnClickListener(v -> {
+            IntentIntegrator integrator = new IntentIntegrator(requireActivity());
+            integrator.setPrompt("SCAN");
+            integrator.setRequestCode(111);
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+            integrator.setCameraId(0);
+            Intent scanIntent = integrator.createScanIntent();
+            qrScannerLauncher.launch(scanIntent);
         });
     }
 

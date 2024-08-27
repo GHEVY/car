@@ -4,6 +4,7 @@
     <string name="filter">ФИЛЬТР</string>
     <string name="parts">АВТОЗАПЧАСТИ</string>
     <string name="add">ДОБАВИТЬ</string>
+    <string name="addByQr">ДОБАВИТЬ ПО QR</string>
     <string name="save">СОХРАНИТЬ</string>
     <string name="category">ВВЕДИТЕ КАТЕГОРИЮ</string>
     <string name="name">ВВЕДИТЕ ИМЯ</string>

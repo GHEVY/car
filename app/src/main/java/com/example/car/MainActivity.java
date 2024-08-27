@@ -17,15 +17,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private String[] names;
-    private ActivityMainBinding binding;
     private SharedViewModel model;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(this).get(SharedViewModel.class);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         names = new String[]{
                 getString(R.string.oil),
@@ -33,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.parts),
         };
         List<Fragment> list = new ArrayList<>();
-        list.add(FragmentItem.newInstance(getString(R.string.oil)));
-        list.add(FragmentItem.newInstance(getString(R.string.filter)));
-        list.add(FragmentItem.newInstance(getString(R.string.parts)));
+        list.add(FragmentItem.newInstance());
+        list.add(FragmentItem.newInstance());
+        list.add(FragmentItem.newInstance());
         PagerAdapter adapter = new PagerAdapter(list, getSupportFragmentManager(), getLifecycle());
         binding.viewPager.setAdapter(adapter);
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(

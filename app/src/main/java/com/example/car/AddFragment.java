@@ -54,7 +54,6 @@ public class AddFragment extends Fragment {
         }
         else{
             binding.count.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setCount(s.toString() + "hat")));
-
         }
         binding.buy.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setBuyPrice(s.toString() + "$")));
         binding.sell.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setSellPrice(s.toString() + "$")));

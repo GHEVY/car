@@ -65,9 +65,7 @@ public class DataItem implements Parcelable {
         this.type = type;
     }
 
-    public String getCount() {
-        return count;
-    }
+    public String getCount() {return count;}
 
     public void setCount(String count) {
         this.count = count;
