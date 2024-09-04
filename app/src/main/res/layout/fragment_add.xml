@@ -68,16 +68,30 @@
         android:layout_marginTop="50dp"
         android:hint="@string/sell_price"
         android:textColor="@color/black"/>
-    <EditText
+    <Spinner
         android:id="@+id/category"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/sell"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="50dp"
-        android:hint="@string/category"
+        android:layout_marginHorizontal="30dp"
+        android:hint="@string/write_category"
         android:textColor="@color/black"/>
+
+    <Button
+        android:id="@+id/add_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/category"
+        android:text="@string/add_category"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        />
+
 
 
 

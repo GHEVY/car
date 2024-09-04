@@ -5,12 +5,16 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.UUID;
+
 public class DataItem implements Parcelable {
+
+    private String productId;
     private DataType type;
     private String name;
     private String count;
     private String buyPrice;
-    private  String sellPrice;
+    private String sellPrice;
     private String category;
 
     public DataItem() {
@@ -40,6 +44,14 @@ public class DataItem implements Parcelable {
             return new DataItem[size];
         }
     };
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
     public String getName() {
         return name;

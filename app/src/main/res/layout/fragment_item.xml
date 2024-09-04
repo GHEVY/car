@@ -4,27 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".FragmentItem">
 
-
-    <Button
-        android:id="@+id/add"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/menuFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:text="@string/add"
-        android:textColor="@color/black"
+        android:layout_margin="7dp"
+        android:background="@null"
+        app:fabSize="normal"
+        app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Medium"
+        android:src="@drawable/add"
+        app:backgroundTint="@android:color/holo_green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <Button
-        android:id="@+id/addByQr"
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:text="@string/addByQr"
-        android:textColor="@color/black"
+        app:fabSize="mini"
+        app:fabCustomSize="@android:dimen/app_icon_size"
+        android:layout_margin="10dp"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/add"
+        android:visibility="invisible"
+        app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Small"
+        app:backgroundTint="@android:color/holo_green_dark"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add" />
+        app:layout_constraintTop_toBottomOf="@id/menuFAB" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addByQRFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="mini"
+        app:fabCustomSize="@android:dimen/app_icon_size"
+        android:layout_margin="10dp"
+        android:layout_marginTop="25dp"
+        app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Small"
+        android:src="@drawable/barcode"
+        android:visibility="invisible"
+        app:backgroundTint="@android:color/holo_green_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addFAB" />
+
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
@@ -40,6 +67,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
+        android:background="@drawable/spinner_item_background"
+        android:paddingHorizontal="30dp"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +79,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
+        android:background="@drawable/spinner_item_background"
+        android:paddingHorizontal="30dp"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
