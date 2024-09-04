@@ -83,6 +83,18 @@ public class SharedViewModel extends ViewModel {
         }
         return items;
     }
+    public DataItem getItemByProductID(String id){
+        try (MyCursorWrapper cursor = query()){
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                if (cursor.getItem().getProductId() == id){
+                    return cursor.getItem();
+                }
+                cursor.moveToNext();
+            }
+        }
+        return null;
+    }
 
     private static ContentValues getContentValues(DataItem item) {
         ContentValues values = new ContentValues();

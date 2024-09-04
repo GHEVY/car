@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
@@ -58,12 +59,17 @@ public class FragmentItem extends Fragment {
                     if(newItem.getCount()!=null && newItem.getSellPrice()!=null){
                         binding.count.setText(newItem.getCount());
                         binding.price.setText(newItem.getSellPrice());
-                        Toast.makeText(requireContext(),newItem.getProductId()+" id",Toast.LENGTH_SHORT).show();
                     }else {
                         binding.count.setText("");
                         binding.price.setText("");
                     }
-                }
+                    if(newItem.getProductId() != null) {
+                        Toast.makeText(requireContext(), newItem.getProductId(), Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(requireContext(),"null",Toast.LENGTH_SHORT).show();
+                    }
+                    }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -83,15 +89,15 @@ public class FragmentItem extends Fragment {
         closeMenu();
 
         binding.menuFAB.setOnClickListener(new View.OnClickListener() {
-            private boolean isExpanded = false;
+            private boolean isOpened = false;
             @Override
             public void onClick(View v) {
-                if (isExpanded) {
+                if (isOpened) {
                     closeMenu();
                 } else {
                     openMenu();
                 }
-                isExpanded = !isExpanded;
+                isOpened = !isOpened;
             }
         });
         binding.addFAB.setOnClickListener(v -> {
@@ -110,6 +116,18 @@ public class FragmentItem extends Fragment {
             integrator.setCameraId(0);
             Intent scanIntent = integrator.createScanIntent();
             qrScannerLauncher.launch(scanIntent);
+        });
+        binding.findByQRFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator integrator = new IntentIntegrator(requireActivity());
+                integrator.setPrompt("SCAN");
+                integrator.setRequestCode(111);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+                integrator.setCameraId(0);
+                Intent scanIntent = integrator.createScanIntent();
+                qrScannerLauncher2.launch(scanIntent);
+            }
         });
     }
 
@@ -138,7 +156,6 @@ public class FragmentItem extends Fragment {
                     if (data != null) {
                         String resultContents = data.getStringExtra("SCAN_RESULT");
                         if (resultContents != null) {
-                            Toast.makeText(requireContext(), resultContents, Toast.LENGTH_SHORT).show();
                             Fragment fragment = AddFragment.newInstance2(model.getType().toString(),resultContents);
                             getParentFragmentManager().beginTransaction()
                                     .replace(R.id.fragment_container, fragment)
@@ -154,16 +171,44 @@ public class FragmentItem extends Fragment {
                 }
             }
     );
+    private final ActivityResultLauncher<Intent> qrScannerLauncher2 = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        String resultContents = data.getStringExtra("SCAN_RESULT");
+                        if (resultContents != null) {
+                            model.getItemByProductID(resultContents);
+                            DialogFragment dialogFragment = Dialog2.newInstance(resultContents);
+                            dialogFragment.show(getParentFragmentManager(), "TAG");
+                            dialogFragment.setTargetFragment(this, 0);
+                            getParentFragmentManager().setFragmentResultListener("category", getViewLifecycleOwner(), fragmentResultListener);
+                        } else {
+                            Toast.makeText(requireContext(), "No data found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "No scan data received!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+    );
     private void openMenu() {
         binding.addFAB.setVisibility(View.VISIBLE);
         binding.addByQRFAB.setVisibility(View.VISIBLE);
+        binding.findFAB.setVisibility(View.VISIBLE);
+        binding.findByQRFAB.setVisibility(View.VISIBLE);
         binding.addFAB.animate().translationY(0).start();
         binding.addByQRFAB.animate().translationY(0).start();
+        binding.findFAB.animate().translationX(0).start();
+        binding.findByQRFAB.animate().translationX(0).start();
     }
 
     private void closeMenu() {
         binding.addFAB.animate().translationY(-150).withEndAction(() -> binding.addFAB.setVisibility(View.GONE)).start();
         binding.addByQRFAB.animate().translationY(-350).withEndAction(() -> binding.addByQRFAB.setVisibility(View.GONE)).start();
+        binding.findFAB.animate().translationX(150).withEndAction(()-> binding.findFAB.setVisibility(View.GONE)).start();
+        binding.findByQRFAB.animate().translationX(350).withEndAction(()-> binding.findByQRFAB.setVisibility(View.GONE)).start();
     }
 
 }

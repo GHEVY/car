@@ -15,7 +15,7 @@
         android:background="@null"
         app:fabSize="normal"
         app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Medium"
-        android:src="@drawable/add"
+        android:src="@drawable/menu"
         app:backgroundTint="@android:color/holo_green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         app:fabSize="mini"
         app:fabCustomSize="@android:dimen/app_icon_size"
-        android:layout_margin="10dp"
+        android:layout_margin="9dp"
         android:layout_marginTop="25dp"
         app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Small"
         android:src="@drawable/barcode"
@@ -51,6 +51,35 @@
         app:backgroundTint="@android:color/holo_green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/addFAB" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/findFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="mini"
+        app:fabCustomSize="@android:dimen/app_icon_size"
+        android:layout_margin="9dp"
+        android:src="@drawable/find"
+        android:visibility="invisible"
+        app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Small"
+        app:backgroundTint="@android:color/holo_green_dark"
+        app:layout_constraintEnd_toStartOf="@id/menuFAB"
+        app:layout_constraintTop_toTopOf="@id/menuFAB" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/findByQRFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="mini"
+        app:fabCustomSize="@android:dimen/app_icon_size"
+        android:layout_margin="10dp"
+        app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Small"
+        android:src="@drawable/findbyqr"
+        android:visibility="invisible"
+        app:backgroundTint="@android:color/holo_green_dark"
+        app:layout_constraintEnd_toStartOf="@id/findFAB"
+        app:layout_constraintTop_toTopOf="@id/menuFAB" />
 
     <Spinner
         android:id="@+id/spinner"
