@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">car</string>
+    <string name="app_name">CAR</string>
     <string name="oil">МАСЛО</string>
     <string name="filter">ФИЛЬТР</string>
     <string name="parts">ЗАПЧАСТИ</string>
@@ -10,8 +10,11 @@
     <string name="name">ВВЕДИТЕ ИМЯ</string>
     <string name="count">ВВЕДИТЕ КОЛИЧЕСТВО</string>
     <string name="buy_price">ВВЕДИТЕ ЦЕНУ ПОКУПКИ</string>
+    <string name="minPrice">МИН.ЦЕНА</string>
+    <string name="maxPrice">МАКС.ЦЕНА</string>
     <string name="sell_price">ВВЕДИТЕ ЦЕНУ ПРОДАЖИ</string>
+    <string name="noitem">ТОВАР НЕ НАЙДЕН</string>
     <string name="write_category">ВВЕДИТЕ КАТЕГОРИЮ</string>
-
-
+    <string name="search">ПОИСК</string>
+    <string name="type">Выберите тип</string>
 </resources>

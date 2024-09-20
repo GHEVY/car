@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.car.databinding.FragmentCategoryAddBinding;
 
-public class Dialog extends DialogFragment{
+public class categoryAdd extends DialogFragment{
     String category;
 
     public interface OnDialogResultListener {

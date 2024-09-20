@@ -9,9 +9,14 @@
     <string name="addByQr">ADD BY QR</string>
     <string name="name">INPUT NAME</string>
     <string name="count">INPUT COUNT</string>
+    <string name="minPrice">INPUT MIN PRICE</string>
+    <string name="maxPrice">INPUT MAX PRICE</string>
     <string name="buy_price">INPUT BUY PRICE</string>
     <string name="sell_price">INPUT SELL PRICE</string>
-    <string name="write_category">WRITE CATEGORY</string>
+    <string name="write_category">INPUT CATEGORY</string>
+    <string name="noitem">NO ITEM FOUNDED</string>
+    <string name="search">SEARCH</string>
+    <string name="type">CHOOSE A TYPE</string>
 
 
 </resources>

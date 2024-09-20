@@ -12,24 +12,24 @@ public class DataItem implements Parcelable {
     private String productId;
     private DataType type;
     private String name;
-    private String count;
-    private String buyPrice;
-    private String sellPrice;
+    private int count;
+    private int buyPrice;
+    private int sellPrice;
     private String category;
 
     public DataItem() {
         this.type = null;
-        this.count = null;
-        this.buyPrice = null;
-        this.sellPrice = null;
+        this.count = -1;
+        this.buyPrice = -1;
+        this.sellPrice = -1;
         this.category =null;
     }
 
     protected DataItem(Parcel in) {
         name = in.readString();
-        count = in.readString();
-        buyPrice = in.readString();
-        sellPrice = in.readString();
+        count = Integer.parseInt(in.readString());
+        buyPrice = Integer.parseInt(in.readString());
+        sellPrice = Integer.parseInt(in.readString());
         category = in.readString();
     }
 
@@ -77,25 +77,25 @@ public class DataItem implements Parcelable {
         this.type = type;
     }
 
-    public String getCount() {return count;}
+    public int getCount() {return count;}
 
-    public void setCount(String count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
-    public String getBuyPrice() {
+    public int getBuyPrice() {
         return buyPrice;
     }
 
-    public void setBuyPrice(String buyPrice) {
+    public void setBuyPrice(int buyPrice) {
         this.buyPrice = buyPrice;
     }
 
-    public String getSellPrice() {
+    public int getSellPrice() {
         return sellPrice;
     }
 
-    public void setSellPrice(String sellPrice) {
+    public void setSellPrice(int sellPrice) {
         this.sellPrice = sellPrice;
     }
     @Override
@@ -106,9 +106,9 @@ public class DataItem implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeString(count);
-        dest.writeString(buyPrice);
-        dest.writeString(sellPrice);
+        dest.writeString(String.valueOf(count));
+        dest.writeString(String.valueOf(buyPrice));
+        dest.writeString(String.valueOf(sellPrice));
         dest.writeString(category);
     }
 }

@@ -13,9 +13,9 @@ public class MyCursorWrapper extends CursorWrapper {
     public DataItem getItem() {
         String Type = getString(getColumnIndex(DBSchema.Table.Cols.Type));
         String Name = getString(getColumnIndex(DBSchema.Table.Cols.Name));
-        String Count = getString(getColumnIndex(DBSchema.Table.Cols.Count));
-        String Buy_price = getString(getColumnIndex(DBSchema.Table.Cols.Buy_price));
-        String Sell_price = getString(getColumnIndex(DBSchema.Table.Cols.Sell_price));
+        int Count = getInt(getColumnIndex(DBSchema.Table.Cols.Count));
+        int Buy_price = getInt(getColumnIndex(DBSchema.Table.Cols.Buy_price));
+        int Sell_price = getInt(getColumnIndex(DBSchema.Table.Cols.Sell_price));
         String Category = getString(getColumnIndex(DBSchema.Table.Cols.Category));
         DataItem dataItem = new DataItem();
         dataItem.setType(DataType.valueOf(Type));
