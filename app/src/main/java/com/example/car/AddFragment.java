@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.car.data.DataItem;
 import com.example.car.databinding.FragmentAddBinding;
@@ -21,10 +22,11 @@ import com.example.car.utils.SharedViewModel;
 
 import java.util.ArrayList;
 
-
 public class AddFragment extends Fragment implements categoryAdd.OnDialogResultListener {
     private static final String ARG_KEY = "args";
     private static final String ITEM_KEY = "ITEM";
+    private static final String ID_KEY = "ID";
+    private static final String CATEGORY = "CATEGORY";
     private FragmentAddBinding binding;
     private DataItem dataItem;
     private ArrayAdapter<String> adapter;
@@ -32,15 +34,14 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
 
     @Override
     public void onDestroy() {
-        assert getArguments() != null;
-        MainActivity.update(getArguments().getInt(ITEM_KEY));
+        model.update();
         super.onDestroy();
     }
 
     public static AddFragment newInstance(String type, int a) {
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY, type);
-        bundle.putInt(ITEM_KEY ,a);
+        bundle.putInt(ITEM_KEY, a);
         AddFragment fragment = new AddFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -49,16 +50,16 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
     public static AddFragment newInstance2(String type, String productId) {
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY, type);
-        bundle.putString("ID", productId);
+        bundle.putString(ID_KEY, productId);
         AddFragment fragment = new AddFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        model = MainActivity.getModel();
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
         binding = FragmentAddBinding.inflate(getLayoutInflater());
         adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, model.getCategoryList());
         binding.category.setAdapter(adapter);
@@ -72,13 +73,13 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
         assert getArguments() != null;
         dataItem = new DataItem();
         dataItem.setType(model.getType());
-        String id = getArguments().getString("ID");
+        String id = getArguments().getString(ID_KEY);
         if (id != null) {
             dataItem.setProductId(id);
         }
         FragmentResultListener fragmentResultListener = (requestKey, result) -> {
             ArrayList<String> list = new ArrayList<>();
-            list.add(result.getString("category"));
+            list.add(result.getString(CATEGORY));
             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, list);
             binding.category.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -89,9 +90,9 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
         binding.sell.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setSellPrice(Integer.parseInt(s.toString()))));
         binding.addCategory.setOnClickListener(v -> {
             DialogFragment dialogFragment = new categoryAdd();
-            dialogFragment.show(getParentFragmentManager(), "TAG");
+            dialogFragment.show(getParentFragmentManager(), null);
             dialogFragment.setTargetFragment(this, 0);
-            getParentFragmentManager().setFragmentResultListener("category", getViewLifecycleOwner(), fragmentResultListener);
+            getParentFragmentManager().setFragmentResultListener(CATEGORY, getViewLifecycleOwner(), fragmentResultListener);
         });
         adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, model.getCategoryList());
         binding.category.setAdapter(adapter);
@@ -107,9 +108,9 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
             } else if (binding.category.getSelectedItem() == null) {
                 Toast.makeText(requireContext(), getString(R.string.write_category), Toast.LENGTH_SHORT).show();
             } else {
-                    dataItem.setCategory(binding.category.getSelectedItem().toString());
-                    model.addToDB(dataItem);
-                    getParentFragmentManager().popBackStack();
+                dataItem.setCategory(binding.category.getSelectedItem().toString());
+                model.addToDB(dataItem);
+                getParentFragmentManager().popBackStack();
             }
         });
     }

@@ -4,11 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.ArrayAdapter;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.car.FragmentItem;
+import com.example.car.PagerAdapter;
 import com.example.car.data.DataItem;
 import com.example.car.data.DataType;
 import com.example.car.database.DBHelper;
@@ -22,11 +23,20 @@ import java.util.Set;
 
 public class SharedViewModel extends ViewModel {
     private DataType type;
-    private final SQLiteDatabase database;
+    private SQLiteDatabase database;
 
+    public LiveData<Boolean> viewState;
+    public void update() {
+        if(pager2!=null && adapter!=null) {
+            pager2.setAdapter(adapter);
+        }
+    }
 
-    public SharedViewModel(Context context) {
+    public void init(Context context) {
         this.database = new DBHelper(context).getWritableDatabase();
+    }
+    public SharedViewModel(){
+
     }
 
     public void setType(DataType type) {
@@ -34,9 +44,8 @@ public class SharedViewModel extends ViewModel {
             this.type = DataType.OIL;
         } else if (type == DataType.FILTER) {
             this.type = DataType.FILTER;
-        }
-        if (type == DataType.AUTOPARTS) {
-            this.type = DataType.AUTOPARTS;
+        } else if (type == DataType.AUTO_PARTS) {
+            this.type = DataType.AUTO_PARTS;
         }
     }
 
@@ -135,7 +144,7 @@ public class SharedViewModel extends ViewModel {
                         continue;
                     }
                 }
-                if(!Objects.equals(type, "")){
+                if(!Objects.equals(type, null)){
                     if(!cursor.getItem().getType().toString().equals(type)){
                         cursor.moveToNext();
                         continue;
@@ -169,6 +178,7 @@ public class SharedViewModel extends ViewModel {
     public void addToDB(DataItem dataItem) {
         ContentValues contentValues = getContentValues(dataItem);
         database.insert(DBSchema.Table.NAME, null, contentValues);
+        viewState.
     }
 
     private MyCursorWrapper query() {
@@ -183,7 +193,4 @@ public class SharedViewModel extends ViewModel {
         );
         return new MyCursorWrapper(cursor);
     }
-
-
-
 }

@@ -35,19 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/menuFAB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="70dp"
-        android:background="@null"
-        android:src="@drawable/menu"
-        app:backgroundTint="@android:color/holo_green_dark"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Medium" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -58,6 +45,7 @@
         android:contentDescription="@null"
         android:src="@drawable/add"
         android:visibility="visible"
+        app:tint = "@color/black"
         app:backgroundTint="@android:color/holo_green_dark"
         app:fabCustomSize="@android:dimen/app_icon_size"
         app:fabSize="mini"
@@ -75,6 +63,7 @@
         android:visibility="visible"
         app:backgroundTint="@android:color/holo_green_dark"
         app:fabCustomSize="@android:dimen/app_icon_size"
+        app:tint = "@color/black"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@id/addFAB"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +78,7 @@
         android:visibility="visible"
         app:backgroundTint="@android:color/holo_green_dark"
         app:fabCustomSize="@android:dimen/app_icon_size"
+        app:tint = "@color/black"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@id/addByQRFAB"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,6 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:src="@drawable/findbyqr"
+        app:tint = "@color/black"
         android:visibility="visible"
         app:backgroundTint="@android:color/holo_green_dark"
         app:fabCustomSize="@android:dimen/app_icon_size"
@@ -108,6 +99,22 @@
         app:layout_constraintBottom_toTopOf="@id/findFAB"
         app:layout_constraintEnd_toEndOf="parent"
         app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Small" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/menuFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="70dp"
+        android:contentDescription="@null"
+        android:src="@drawable/menu"
+        app:tint="@color/black"
+        app:backgroundTint="@android:color/holo_green_dark"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearance="@style/Widget.Material3.CircularProgressIndicator.Medium" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

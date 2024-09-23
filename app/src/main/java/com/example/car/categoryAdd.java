@@ -2,8 +2,6 @@ package com.example.car;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.car.databinding.FragmentCategoryAddBinding;
+import com.example.car.utils.AppTextSeparatedWatcher;
 
 public class categoryAdd extends DialogFragment{
     String category;
@@ -25,24 +24,12 @@ public class categoryAdd extends DialogFragment{
             listener.onDialogResult(result);
         }
     }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentCategoryAddBinding binding = FragmentCategoryAddBinding.inflate(getLayoutInflater());
         listener = (OnDialogResultListener) getTargetFragment();
-        binding.categoryWrite.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                category = s.toString();
-            }
-        });
+        binding.categoryWrite.addTextChangedListener(new AppTextSeparatedWatcher(new AppTextSeparatedWatcher(s -> category=s.toString())));
         binding.save.setOnClickListener(v -> {
             sendResult(category);
             dismiss();

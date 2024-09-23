@@ -3,7 +3,6 @@ package com.example.car;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -13,6 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.car.data.DataType;
@@ -22,31 +23,36 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<String> names;
-    private DataType[] name;
-    private Drawable[] drawables;
-    private static SharedViewModel model;
-    private static ActivityMainBinding binding;
-    public static PagerAdapter adapter;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+    private final DataType[] name = new DataType[]{
+            DataType.OIL,
+            DataType.FILTER,
+            DataType.AUTO_PARTS
+    };
 
+    private final int[] drawables = new int[]{
+            R.drawable.oil,
+            R.drawable.filter,
+            R.drawable.parts
+    };
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    private SharedViewModel model;
+    private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = new SharedViewModel(this);
+        model = new ViewModelProvider(this).get(SharedViewModel.class);
+        model.init(this);
+        model.setAdapter(new PagerAdapter(getSupportFragmentManager(),getLifecycle()));
         if (model.getType() == null) {
             model.setType(DataType.OIL);
         }
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        model.setPager2(binding.viewPager);
         setContentView(binding.getRoot());
         closeMenu();
         names = new ArrayList<String>() {
@@ -54,27 +60,16 @@ public class MainActivity extends AppCompatActivity {
         names.add(getString(R.string.oil));
         names.add(getString(R.string.filter));
         names.add(getString(R.string.parts));
-        name = new DataType[]{
-                DataType.OIL,
-                DataType.FILTER,
-                DataType.AUTOPARTS
-        };
-        drawables = new Drawable[]{
-                getDrawable(R.drawable.oil),
-                getDrawable(R.drawable.filter),
-                getDrawable(R.drawable.parts)
-        };
-        List<Fragment> list = new ArrayList<>();
-        list.add(FragmentItem.newInstance());
-        list.add(FragmentItem.newInstance());
-        list.add(FragmentItem.newInstance());
-        adapter = new PagerAdapter(list, getSupportFragmentManager(), getLifecycle());
-        binding.viewPager.setAdapter(adapter);
+        if(binding.viewPager.getAdapter()==null){
+            binding.viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),getLifecycle()));
+        }
+        @SuppressLint("UseCompatLoadingForDrawables")
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
             tab.setText(names.get(position));
-            tab.setIcon(drawables[position]);
+            tab.setIcon(getDrawable(drawables[position]));
         });
         tabLayoutMediator.attach();
+
         binding.viewPager.setOffscreenPageLimit(2);
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -97,10 +92,10 @@ public class MainActivity extends AppCompatActivity {
                 isOpened = !isOpened;
             }
         });
+
         binding.addFAB.setOnClickListener(v -> {
             closeMenu();
             Fragment fragment = AddFragment.newInstance(model.getType().toString(), binding.viewPager.getCurrentItem());
-            binding.viewPager.setVisibility(View.INVISIBLE);
             binding.viewPager.setAdapter(null);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment)
@@ -109,18 +104,27 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.addByQRFAB.setOnClickListener(v -> {
             closeMenu();
-            binding.viewPager.setVisibility(View.INVISIBLE);
-            binding.viewPager.setAdapter(null);
             qrScannerLauncher.launch(createIntegratorIntent());
+
         });
         binding.findByQRFAB.setOnClickListener(v -> {
             closeMenu();
             qrScannerLauncher2.launch(createIntegratorIntent());
+
         });
         binding.findFAB.setOnClickListener(v -> {
             closeMenu();
-            DialogFragment dialogFragment = SearchFilter.newInstance();
+            DialogFragment dialogFragment = SearchFilter.newInstance(binding.viewPager.getCurrentItem());
             dialogFragment.show(getSupportFragmentManager(), "TAG");
+        });
+
+        model.viewState.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+
+                }
+            }
         });
     }
 
@@ -140,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                     if (data != null) {
                         String resultContents = data.getStringExtra("SCAN_RESULT");
                         if (resultContents != null) {
+                            binding.viewPager.setVisibility(View.INVISIBLE);
+                            binding.viewPager.setAdapter(null);
                             Fragment fragment = AddFragment.newInstance2(model.getType().toString(), resultContents);
                             getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.fragment_container, fragment)
@@ -162,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     if (data != null) {
                         String resultContents = data.getStringExtra("SCAN_RESULT");
                         if (resultContents != null) {
-                            DialogFragment dialogFragment = Found.newInstance(resultContents);
+                            DialogFragment dialogFragment = FindDialog.newInstance(resultContents, binding.viewPager.getCurrentItem());
                             dialogFragment.show(getSupportFragmentManager(), "TAG");
                         } else {
                             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
@@ -175,32 +181,23 @@ public class MainActivity extends AppCompatActivity {
     );
 
     private void openMenu() {
-        binding.addFAB.setVisibility(View.VISIBLE);
-        binding.addByQRFAB.setVisibility(View.VISIBLE);
-        binding.findFAB.setVisibility(View.VISIBLE);
-        binding.findByQRFAB.setVisibility(View.VISIBLE);
-        binding.addFAB.animate().translationY(0).start();
-        binding.addByQRFAB.animate().translationY(0).start();
-        binding.findFAB.animate().translationY(0).start();
-        binding.findByQRFAB.animate().translationY(0).start();
+        binding.addFAB.animate().translationY(0).withEndAction(() -> binding.addFAB.setClickable(true)).start();
+        binding.addByQRFAB.animate().translationY(0).withEndAction(() -> binding.addByQRFAB.setClickable(true)).start();
+        binding.findFAB.animate().translationY(0).withEndAction(() -> binding.findFAB.setClickable(true)).start();
+        binding.findByQRFAB.animate().translationY(0).withEndAction(() -> binding.findByQRFAB.setClickable(true)).start();
     }
 
     private void closeMenu() {
-        binding.addFAB.animate().translationY(150).withEndAction(() -> binding.addFAB.setVisibility(View.GONE)).start();
-        binding.addByQRFAB.animate().translationY(350).withEndAction(() -> binding.addByQRFAB.setVisibility(View.GONE)).start();
-        binding.findFAB.animate().translationY(550).withEndAction(() -> binding.findFAB.setVisibility(View.GONE)).start();
-        binding.findByQRFAB.animate().translationY(750).withEndAction(() -> binding.findByQRFAB.setVisibility(View.GONE)).start();
+        binding.addFAB.animate().translationY(200).withEndAction(() -> binding.addFAB.setClickable(false)).start();
+        binding.addByQRFAB.animate().translationY(380).withEndAction(() -> binding.addByQRFAB.setClickable(false)).start();
+        binding.findFAB.animate().translationY(570).withEndAction(() -> binding.findFAB.setClickable(false)).start();
+        binding.findByQRFAB.animate().translationY(760).withEndAction(() -> binding.findByQRFAB.setClickable(false)).start();
     }
 
-    public static SharedViewModel getModel() {
-        return model;
-    }
-
-
-    public static void update(int a) {
-        binding.viewPager.setAdapter(adapter);
-        binding.viewPager.setCurrentItem(a);
-        binding.viewPager.setVisibility(View.VISIBLE);
-    }
+//    public void updateActivity(int a) {
+//        binding.viewPager.setAdapter(adapter);
+//        binding.viewPager.setCurrentItem(a);
+//        binding.viewPager.setVisibility(View.VISIBLE);
+//    }
 
 }
