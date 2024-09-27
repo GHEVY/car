@@ -6,15 +6,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.car.data.DataType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PagerAdapter extends FragmentStateAdapter {
     private final List<Fragment> fragments = new ArrayList<>(Arrays.asList(
-            FragmentItem.newInstance(),
-            FragmentItem.newInstance(),
-            FragmentItem.newInstance()
+            FragmentItem.newInstance(DataType.OIL),
+            FragmentItem.newInstance(DataType.FILTER),
+            FragmentItem.newInstance(DataType.AUTO_PARTS)
             ));
 
 

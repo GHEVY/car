@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.util.UUID;
-
 public class DataItem implements Parcelable {
 
     private String productId;
@@ -111,4 +109,6 @@ public class DataItem implements Parcelable {
         dest.writeString(String.valueOf(sellPrice));
         dest.writeString(category);
     }
+
+
 }

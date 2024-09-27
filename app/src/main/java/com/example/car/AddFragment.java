@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.car.data.DataItem;
+import com.example.car.data.DataType;
 import com.example.car.databinding.FragmentAddBinding;
 import com.example.car.utils.AppTextSeparatedWatcher;
 import com.example.car.utils.SharedViewModel;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 
 public class AddFragment extends Fragment implements categoryAdd.OnDialogResultListener {
     private static final String ARG_KEY = "args";
-    private static final String ITEM_KEY = "ITEM";
     private static final String ID_KEY = "ID";
     private static final String CATEGORY = "CATEGORY";
     private FragmentAddBinding binding;
@@ -32,22 +32,8 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
     private ArrayAdapter<String> adapter;
     private SharedViewModel model;
 
-    @Override
-    public void onDestroy() {
-        model.update();
-        super.onDestroy();
-    }
 
-    public static AddFragment newInstance(String type, int a) {
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_KEY, type);
-        bundle.putInt(ITEM_KEY, a);
-        AddFragment fragment = new AddFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static AddFragment newInstance2(String type, String productId) {
+    public static AddFragment newInstance(String type, @Nullable String productId) {
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY, type);
         bundle.putString(ID_KEY, productId);
@@ -61,7 +47,7 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
         model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         binding = FragmentAddBinding.inflate(getLayoutInflater());
-        adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, model.getCategoryList());
+        adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, model.getCategoryList(DataType.valueOf(getArguments().getString(ARG_KEY))));
         binding.category.setAdapter(adapter);
         return binding.getRoot();
     }
@@ -72,7 +58,7 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
         super.onViewCreated(view, savedInstanceState);
         assert getArguments() != null;
         dataItem = new DataItem();
-        dataItem.setType(model.getType());
+        dataItem.setType(DataType.valueOf(getArguments().getString(ARG_KEY)));
         String id = getArguments().getString(ID_KEY);
         if (id != null) {
             dataItem.setProductId(id);
@@ -94,7 +80,7 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
             dialogFragment.setTargetFragment(this, 0);
             getParentFragmentManager().setFragmentResultListener(CATEGORY, getViewLifecycleOwner(), fragmentResultListener);
         });
-        adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, model.getCategoryList());
+        adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, model.getCategoryList(DataType.valueOf(getArguments().getString(ARG_KEY))));
         binding.category.setAdapter(adapter);
         binding.save.setOnClickListener(v -> {
             if (dataItem.getName() == null) {
@@ -117,10 +103,16 @@ public class AddFragment extends Fragment implements categoryAdd.OnDialogResultL
 
     @Override
     public void onDialogResult(String result) {
-        ArrayList<String> list = new ArrayList<>(model.getCategoryList());
+        ArrayList<String> list = new ArrayList<>(model.getCategoryList(DataType.valueOf(getArguments().getString(ARG_KEY))));
         list.add(result);
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, list);
         binding.category.setAdapter(adapter1);
         adapter1.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        model.newUpdate.setValue(true);
     }
 }

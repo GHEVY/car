@@ -1,20 +1,20 @@
 <resources>
-    <string name="app_name">CAR</string>
-    <string name="oil">МАСЛО</string>
-    <string name="filter">ФИЛЬТР</string>
-    <string name="parts">ЗАПЧАСТИ</string>
-    <string name="add">ДОБАВИТЬ</string>
-    <string name="add_category">ДОБАВИТЬ КАТЕГОРИЮ</string>
-    <string name="addByQr">ДОБАВИТЬ ПО QR</string>
-    <string name="save">СОХРАНИТЬ</string>
-    <string name="name">ВВЕДИТЕ ИМЯ</string>
-    <string name="count">ВВЕДИТЕ КОЛИЧЕСТВО</string>
-    <string name="buy_price">ВВЕДИТЕ ЦЕНУ ПОКУПКИ</string>
-    <string name="minPrice">МИН.ЦЕНА</string>
-    <string name="maxPrice">МАКС.ЦЕНА</string>
-    <string name="sell_price">ВВЕДИТЕ ЦЕНУ ПРОДАЖИ</string>
-    <string name="noitem">ТОВАР НЕ НАЙДЕН</string>
-    <string name="write_category">ВВЕДИТЕ КАТЕГОРИЮ</string>
-    <string name="search">ПОИСК</string>
+    <string name="app_name">Car</string>
+    <string name="oil">Масло</string>
+    <string name="filter">Фильтр</string>
+    <string name="parts">Запчасти</string>
+    <string name="add">Добавить</string>
+    <string name="add_category">Добавить Категорию</string>
+    <string name="addByQr">Добавить По QR</string>
+    <string name="save">Сохранить</string>
+    <string name="name">Имя</string>
+    <string name="count">Количество</string>
+    <string name="buy_price">Цена Покупки</string>
+    <string name="minPrice">Мин.Цена</string>
+    <string name="maxPrice">Макс.Цена</string>
+    <string name="sell_price">Цена Продажи</string>
+    <string name="noitem">Товар Не Найден</string>
+    <string name="write_category">Категория</string>
+    <string name="search">Поиск</string>
     <string name="type">Выберите тип</string>
 </resources>

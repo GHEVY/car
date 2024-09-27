@@ -4,12 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.car.PagerAdapter;
 import com.example.car.data.DataItem;
 import com.example.car.data.DataType;
 import com.example.car.database.DBHelper;
@@ -22,36 +21,19 @@ import java.util.Objects;
 import java.util.Set;
 
 public class SharedViewModel extends ViewModel {
-    private DataType type;
-    private SQLiteDatabase database;
 
-    public LiveData<Boolean> viewState;
-    public void update() {
-        if(pager2!=null && adapter!=null) {
-            pager2.setAdapter(adapter);
-        }
-    }
+    private SQLiteDatabase database;
+    public MutableLiveData<DataType> viewState = new MutableLiveData<>();
+    public MutableLiveData<Boolean> newUpdate = new MutableLiveData<>();
+
 
     public void init(Context context) {
         this.database = new DBHelper(context).getWritableDatabase();
     }
-    public SharedViewModel(){
 
-    }
-
-    public void setType(DataType type) {
-        if (type == DataType.OIL) {
-            this.type = DataType.OIL;
-        } else if (type == DataType.FILTER) {
-            this.type = DataType.FILTER;
-        } else if (type == DataType.AUTO_PARTS) {
-            this.type = DataType.AUTO_PARTS;
-        }
-    }
-
-    public ArrayList<String> getCategoryList() {
+    public ArrayList<String> getCategoryList(DataType type) {
         Set<String> list = new HashSet<>();
-        if (getType() != null) {
+        if (type != null) {
             MyCursorWrapper cursor = query();
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -62,18 +44,13 @@ public class SharedViewModel extends ViewModel {
         return new ArrayList<>(list);
     }
 
-
-    public DataType getType() {
-        return type;
-    }
-
-    public ArrayList<String> getNames() {
+    public ArrayList<String> getNames(DataType type) {
         ArrayList<String> list = new ArrayList<>();
-        if (getType() != null) {
+        if (type != null) {
             try (MyCursorWrapper cursor = query()) {
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
-                    if (cursor.getItem().getType().toString().equals(getType().toString())) {
+                    if (cursor.getItem().getType().toString().equals(type.toString())) {
                         list.add(cursor.getItem().getName());
                     }
                     cursor.moveToNext();
@@ -84,12 +61,12 @@ public class SharedViewModel extends ViewModel {
     }
 
 
-    public ArrayList<DataItem> getItem() {
+    public ArrayList<DataItem> getItem(DataType type) {
         ArrayList<DataItem> items = new ArrayList<>();
         try (MyCursorWrapper cursor = query()) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                if (cursor.getItem().getType() == getType()) {
+                if (cursor.getItem().getType() == type) {
                     items.add(cursor.getItem());
                 }
                 cursor.moveToNext();
@@ -115,37 +92,37 @@ public class SharedViewModel extends ViewModel {
         return null;
     }
 
-    public ArrayList<DataItem> findItem(String name, int minPrice, int maxPrice, String category,String type) {
+    public ArrayList<DataItem> findItem(String name, int minPrice, int maxPrice, String category, String type) {
         ArrayList<DataItem> list = new ArrayList<>();
         try (MyCursorWrapper cursor = query()) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                if(name != null){
+                if (name != null) {
                     if (!cursor.getItem().getName().contains(name) && !name.contains(cursor.getItem().getName())) {
                         cursor.moveToNext();
                         continue;
                     }
                 }
-                if(maxPrice != -1 ){
+                if (maxPrice != -1) {
                     if (cursor.getItem().getSellPrice() < minPrice || cursor.getItem().getSellPrice() > maxPrice) {
                         cursor.moveToNext();
                         continue;
                     }
                 }
-                if(maxPrice == -1 && minPrice != -1){
+                if (maxPrice == -1 && minPrice != -1) {
                     if (cursor.getItem().getSellPrice() < minPrice) {
                         cursor.moveToNext();
                         continue;
                     }
                 }
-                if(category != null){
+                if (category != null) {
                     if (!cursor.getItem().getCategory().contains(category) && !category.contains(cursor.getItem().getCategory())) {
                         cursor.moveToNext();
                         continue;
                     }
                 }
-                if(!Objects.equals(type, null)){
-                    if(!cursor.getItem().getType().toString().equals(type)){
+                if (!Objects.equals(type, null)) {
+                    if (!cursor.getItem().getType().toString().equals(type)) {
                         cursor.moveToNext();
                         continue;
                     }
@@ -178,7 +155,22 @@ public class SharedViewModel extends ViewModel {
     public void addToDB(DataItem dataItem) {
         ContentValues contentValues = getContentValues(dataItem);
         database.insert(DBSchema.Table.NAME, null, contentValues);
-        viewState.
+        viewState.setValue(dataItem.getType());
+        newUpdate.setValue(true);
+    }
+
+    public void buy(DataItem item, int count, Context context) {
+        if (item.getCount() >= count) {
+            item.setCount(item.getCount() - count);
+        } else {
+            Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show();
+        }
+        ContentValues values = getContentValues(item);
+//        database.update(DBSchema.Table.NAME,values,"id=",);
+    }
+
+    public void delete(String[] string) {
+        database.delete(DBSchema.Table.NAME, "id=?", string);
     }
 
     private MyCursorWrapper query() {
@@ -193,4 +185,5 @@ public class SharedViewModel extends ViewModel {
         );
         return new MyCursorWrapper(cursor);
     }
+
 }

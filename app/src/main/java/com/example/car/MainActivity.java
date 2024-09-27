@@ -25,7 +25,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<String> names;
+    private static final int SCAN_FOR_ADD_CODE = 100;
+    private static final int SCAN_FOR_FIND_CODE = 100;
+
+    private final ArrayList<String> names = new ArrayList<>();
 
     private final DataType[] name = new DataType[]{
             DataType.OIL,
@@ -47,21 +50,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         model = new ViewModelProvider(this).get(SharedViewModel.class);
         model.init(this);
-        model.setAdapter(new PagerAdapter(getSupportFragmentManager(),getLifecycle()));
-        if (model.getType() == null) {
-            model.setType(DataType.OIL);
-        }
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        model.setPager2(binding.viewPager);
         setContentView(binding.getRoot());
         closeMenu();
-        names = new ArrayList<String>() {
-        };
         names.add(getString(R.string.oil));
         names.add(getString(R.string.filter));
         names.add(getString(R.string.parts));
-        if(binding.viewPager.getAdapter()==null){
-            binding.viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),getLifecycle()));
+        if (binding.viewPager.getAdapter() == null) {
+            binding.viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), getLifecycle()));
         }
         @SuppressLint("UseCompatLoadingForDrawables")
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
@@ -69,16 +65,31 @@ public class MainActivity extends AppCompatActivity {
             tab.setIcon(getDrawable(drawables[position]));
         });
         tabLayoutMediator.attach();
-
         binding.viewPager.setOffscreenPageLimit(2);
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                model.setType((name[position]));
-                binding.viewPager.setCurrentItem(position);
+                model.viewState.setValue(name[position]);
             }
         });
+
+        addFabListeners();
+        binding.viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), getLifecycle()));
+
+        model.newUpdate.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    Toast.makeText(MainActivity.this, "change", Toast.LENGTH_SHORT).show();
+                    updateActivity(model.viewState.getValue());
+                }
+            }
+        });
+
+    }
+
+    private void addFabListeners() {
         binding.menuFAB.setOnClickListener(new View.OnClickListener() {
             private boolean isOpened = false;
 
@@ -95,22 +106,16 @@ public class MainActivity extends AppCompatActivity {
 
         binding.addFAB.setOnClickListener(v -> {
             closeMenu();
-            Fragment fragment = AddFragment.newInstance(model.getType().toString(), binding.viewPager.getCurrentItem());
-            binding.viewPager.setAdapter(null);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
+            handleFabAction(FabAction.ADD_PRODUCT);
+            binding.menuFAB.setVisibility(View.GONE);
         });
         binding.addByQRFAB.setOnClickListener(v -> {
             closeMenu();
             qrScannerLauncher.launch(createIntegratorIntent());
-
         });
         binding.findByQRFAB.setOnClickListener(v -> {
             closeMenu();
             qrScannerLauncher2.launch(createIntegratorIntent());
-
         });
         binding.findFAB.setOnClickListener(v -> {
             closeMenu();
@@ -118,14 +123,6 @@ public class MainActivity extends AppCompatActivity {
             dialogFragment.show(getSupportFragmentManager(), "TAG");
         });
 
-        model.viewState.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean){
-
-                }
-            }
-        });
     }
 
     private Intent createIntegratorIntent() {
@@ -133,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         integrator.setPrompt("SCAN");
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
         integrator.setCameraId(0);
+        integrator.setRequestCode(SCAN_FOR_ADD_CODE);
         return integrator.createScanIntent();
     }
 
@@ -143,14 +141,17 @@ public class MainActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     if (data != null) {
                         String resultContents = data.getStringExtra("SCAN_RESULT");
-                        if (resultContents != null) {
-                            binding.viewPager.setVisibility(View.INVISIBLE);
-                            binding.viewPager.setAdapter(null);
-                            Fragment fragment = AddFragment.newInstance2(model.getType().toString(), resultContents);
+                        int code = data.getIntExtra("REQUEST_CODE", 0);
+                        if(code == SCAN_FOR_ADD_CODE){
+                            Fragment fragment = AddFragment.newInstance(model.viewState.getValue().toString(), resultContents);
                             getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.fragment_container, fragment)
                                     .addToBackStack(null)
                                     .commit();
+                        }
+                        else if (code == SCAN_FOR_FIND_CODE ){
+                            DialogFragment dialogFragment = FindDialog.newInstance(resultContents, binding.viewPager.getCurrentItem());
+                            dialogFragment.show(getSupportFragmentManager(), "TAG");
                         } else {
                             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
                         }
@@ -194,10 +195,36 @@ public class MainActivity extends AppCompatActivity {
         binding.findByQRFAB.animate().translationY(760).withEndAction(() -> binding.findByQRFAB.setClickable(false)).start();
     }
 
-//    public void updateActivity(int a) {
-//        binding.viewPager.setAdapter(adapter);
-//        binding.viewPager.setCurrentItem(a);
-//        binding.viewPager.setVisibility(View.VISIBLE);
-//    }
+    private void handleFabAction(FabAction action){
+        switch (action){
+            case EMPTY:
+                break;
+            case ADD_PRODUCT: {
+                Fragment fragment = AddFragment.newInstance(model.viewState.getValue().toString(), null);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+                break;
+            }
+        }
+    }
 
+    public void updateActivity(DataType type) {
+        if (type == DataType.OIL) {
+            binding.viewPager.setCurrentItem(0);
+        } else if (type == DataType.FILTER) {
+            binding.viewPager.setCurrentItem(1);
+        } else {
+            binding.viewPager.setCurrentItem(2);
+        }
+        binding.menuFAB.setVisibility(View.VISIBLE);
+    }
+
+    private enum FabAction {
+        EMPTY,
+        ADD_PRODUCT,
+        FIND_BY_QR,
+        ADD_BY_QR
+    }
 }

@@ -41,7 +41,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation (libs.zxing.android.embedded)
-
+    implementation(libs.firebase.database.ktx)
     testImplementation(libs.junit)
     implementation(libs.viewpager)
     androidTestImplementation(libs.ext.junit)
