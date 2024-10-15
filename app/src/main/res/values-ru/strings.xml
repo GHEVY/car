@@ -13,7 +13,7 @@
     <string name="minPrice">Мин.Цена</string>
     <string name="maxPrice">Макс.Цена</string>
     <string name="sell_price">Цена Продажи</string>
-    <string name="noitem">Товар Не Найден</string>
+    <string name="noitem">Пусто</string>
     <string name="write_category">Категория</string>
     <string name="search">Поиск</string>
     <string name="type">Выберите тип</string>

@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.car.R;
 import com.example.car.data.DataItem;
 import com.example.car.data.DataType;
 import com.example.car.database.DBHelper;
@@ -24,23 +25,20 @@ public class SharedViewModel extends ViewModel {
 
     private SQLiteDatabase database;
     public MutableLiveData<DataType> viewState = new MutableLiveData<>();
-    public MutableLiveData<Boolean> newUpdate = new MutableLiveData<>();
 
 
     public void init(Context context) {
         this.database = new DBHelper(context).getWritableDatabase();
     }
 
-    public ArrayList<String> getCategoryList(DataType type) {
+    public ArrayList<String> getCategoryList() {
         Set<String> list = new HashSet<>();
-        if (type != null) {
             MyCursorWrapper cursor = query();
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 list.add(cursor.getItem().getCategory());
                 cursor.moveToNext();
             }
-        }
         return new ArrayList<>(list);
     }
 
@@ -155,23 +153,21 @@ public class SharedViewModel extends ViewModel {
     public void addToDB(DataItem dataItem) {
         ContentValues contentValues = getContentValues(dataItem);
         database.insert(DBSchema.Table.NAME, null, contentValues);
-        viewState.setValue(dataItem.getType());
-        newUpdate.setValue(true);
     }
 
-    public void buy(DataItem item, int count, Context context) {
-        if (item.getCount() >= count) {
-            item.setCount(item.getCount() - count);
-        } else {
-            Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show();
-        }
-        ContentValues values = getContentValues(item);
+//    public void sell(DataItem item, int count, Context context) {
+//        if (item.getCount() >= count) {
+//            item.setCount(item.getCount() - count);
+//        } else {
+//            Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show();
+//        }
+//        ContentValues values = getContentValues(item);
 //        database.update(DBSchema.Table.NAME,values,"id=",);
-    }
+//    }
 
-    public void delete(String[] string) {
-        database.delete(DBSchema.Table.NAME, "id=?", string);
-    }
+//    public void delete(String[] string) {
+//        database.delete(DBSchema.Table.NAME, "id=?", string);
+//    }
 
     private MyCursorWrapper query() {
         Cursor cursor = database.query(

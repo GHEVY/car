@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -22,46 +21,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/name"
-            style="@style/editTextStyle"
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
-
             android:layout_height="wrap_content"
+            android:autofillHints="@null"
+            android:layout_margin="@dimen/margin_10"
             android:background="@drawable/spinner_item_background"
             android:hint="@string/name"
+            android:inputType="text"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="@id/linear"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/save" />
 
-
         <EditText
             android:id="@+id/count"
-            style="@style/editTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/count"
-            android:layout_margin="10dp"
-
-            android:inputType="number"
+            android:layout_margin="@dimen/margin_10"
             android:background="@drawable/spinner_item_background"
+            android:hint="@string/count"
+            android:inputType="number"
+            android:autofillHints="@null"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name" />
 
-
         <EditText
             android:id="@+id/buy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_10"
+            android:autofillHints="@null"
+            android:background="@drawable/spinner_item_background"
             android:hint="@string/buy_price"
             android:inputType="number"
-            android:layout_margin="10dp"
-
-            android:background="@drawable/spinner_item_background"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,56 +67,63 @@
             android:id="@+id/sell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/sell_price"
-            android:layout_margin="10dp"
-            android:inputType="number"
+            android:layout_margin="@dimen/margin_10"
             android:background="@drawable/spinner_item_background"
+            android:hint="@string/sell_price"
+            android:inputType="number"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:autofillHints="@null"
             app:layout_constraintTop_toBottomOf="@id/buy" />
 
         <LinearLayout
+            android:id="@+id/linear2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <Spinner
                 android:id="@+id/category"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:background="@null"
+                android:layout_marginHorizontal="@dimen/margin_16"
                 android:layout_weight="3"
-                android:layout_marginHorizontal="30dp"
                 android:hint="@string/write_category"
+                android:popupBackground="@drawable/spinner_item_background"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sell" />
+                app:layout_constraintTop_toBottomOf="@id/sell"
+                />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <Button
                 android:id="@+id/addCategory"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/margin_16"
                 android:layout_weight="1"
-                app:fabSize="normal"
-                android:backgroundTint="@color/white"
-                android:tint="@color/black"
-                android:src="@drawable/add"
-                />
-
+                android:backgroundTint="@color/green"
+                app:icon="@drawable/add"
+                app:iconGravity="start|end"
+                app:iconTint="@color/white" />
 
         </LinearLayout>
 
-
         <Button
             android:id="@+id/save"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_10"
             android:backgroundTint="@color/green"
             android:text="@string/save"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintTop_toBottomOf="@id/linear2" />
+
     </LinearLayout>
+
 </ScrollView>
 
 

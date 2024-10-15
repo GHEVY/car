@@ -12,33 +12,37 @@ import androidx.fragment.app.DialogFragment;
 import com.example.car.databinding.FragmentCategoryAddBinding;
 import com.example.car.utils.AppTextSeparatedWatcher;
 
-public class categoryAdd extends DialogFragment{
-    String category;
+public class CategoryAdd extends DialogFragment {
+    private String category;
 
     public interface OnDialogResultListener {
         void onDialogResult(String result);
     }
+
     private OnDialogResultListener listener;
+
     private void sendResult(String result) {
         if (listener != null) {
             listener.onDialogResult(result);
         }
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentCategoryAddBinding binding = FragmentCategoryAddBinding.inflate(getLayoutInflater());
         listener = (OnDialogResultListener) getTargetFragment();
-        binding.categoryWrite.addTextChangedListener(new AppTextSeparatedWatcher(new AppTextSeparatedWatcher(s -> category=s.toString())));
+        binding.categoryWrite.addTextChangedListener(new AppTextSeparatedWatcher(new AppTextSeparatedWatcher(s -> category = s.toString())));
         binding.save.setOnClickListener(v -> {
             sendResult(category);
             dismiss();
         });
         return binding.getRoot();
     }
+
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
     }
+
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
     }
