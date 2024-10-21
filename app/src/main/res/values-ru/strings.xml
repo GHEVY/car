@@ -13,8 +13,14 @@
     <string name="minPrice">Мин.Цена</string>
     <string name="maxPrice">Макс.Цена</string>
     <string name="sell_price">Цена Продажи</string>
-    <string name="noitem">Пусто</string>
+    <string name="no_item">Пусто</string>
     <string name="write_category">Категория</string>
     <string name="search">Поиск</string>
     <string name="type">Выберите тип</string>
+    <string name="left">Осталось`</string>
+    <string name="price">Цена`</string>
+    <string name="piece">штук</string>
+    <string name="liters">литров</string>
+    <string name="all_required">Все поля обязательны.</string>
+
 </resources>

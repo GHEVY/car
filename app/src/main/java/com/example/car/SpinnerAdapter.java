@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class SpinnerAdapter extends ArrayAdapter<String> {
 
@@ -35,7 +34,8 @@ public class SpinnerAdapter extends ArrayAdapter<String> {
         return super.getView(position, convertView, parent);
     }
 
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.spinner_item, parent, false);
         }

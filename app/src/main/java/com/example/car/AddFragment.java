@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +21,7 @@ import com.example.car.utils.AppTextSeparatedWatcher;
 import com.example.car.utils.SharedViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultListener {
     private static final String ARG_KEY = "args";
@@ -33,10 +33,7 @@ public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultL
     private SpinnerAdapter adapter;
 
     private final FragmentResultListener fragmentResultListener = (requestKey, result) -> {
-        ArrayList<String> list = new ArrayList<>();
-        list.add(result.getString(CATEGORY));
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, list);
-        binding.category.setAdapter(adapter1);
+        adapter.add(result.getString(CATEGORY));
         adapter.notifyDataSetChanged();
     };
 
@@ -82,58 +79,44 @@ public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultL
         addTextWatchers();
 
         binding.save.setOnClickListener(v -> {
-            boolean[] arrBool = new boolean[]{
+            int count =0;
+            boolean[] booleans = {
                     dataItem.getName() == null,
                     dataItem.getCount() == -1,
                     dataItem.getBuyPrice() == -1,
                     dataItem.getSellPrice() == -1,
-                    binding.category.getSelectedItem() == null
+                    binding.category.getSelectedItem() == null};
+            View[] views = {
+                    binding.name,
+                    binding.count,
+                    binding.buy,
+                    binding.sell,
+                    binding.category
             };
-
-            int[] arrInt = new  int[]{
-                    R.string.name,
-                    R.string.count,
-                    R.string.buy_price,
-                    R.string.sell_price,
-                    R.string.write_category
-
-            };
-
-            for(int i =0;i<5;i++){
-                if(arrBool[i]){
-                    showToast(arrInt[i]);
-                    break;
-                } else if (i!=4) {
-                    continue;
+            for (int i = 0; i < booleans.length; i++) {
+                if (booleans[i]) {
+                    showError(views[i]);
                 }
+                else
+                    count++;
+            }
+            if(count == 5){
                 dataItem.setCategory(binding.category.getSelectedItem().toString());
                 model.addToDB(dataItem);
                 getParentFragmentManager().popBackStack();
-
             }
-//            /// TODO simplify
-//            if (dataItem.getName() == null) {
-//                showToast(R.string.name);
-//            } else if (dataItem.getCount() == -1) {
-//                showToast(R.string.count);
-//            } else if (dataItem.getBuyPrice() == -1) {
-//                showToast(R.string.buy_price);
-//            } else if (dataItem.getSellPrice() == -1) {
-//                showToast(R.string.sell_price);
-//            } else if (binding.category.getSelectedItem() == null) {
-//                showToast(R.string.write_category);
-//            } else {
-//                dataItem.setCategory(binding.category.getSelectedItem().toString());
-//                model.addToDB(dataItem);
-//                getParentFragmentManager().popBackStack();
-//            }
-
+            else {
+                Toast.makeText(requireContext(), getString(R.string.all_required), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void showToast(int messageId ) {
-        Toast.makeText(requireContext(), getString(messageId), Toast.LENGTH_SHORT).show();
+
+    @SuppressLint("ResourceAsColor")
+    private void showError(View view) {
+        view.animate().translationX(-10).setDuration(70).withEndAction(() -> view.animate().translationX(20).setDuration(70).withEndAction(() -> view.animate().translationX(0).setDuration(70).start()));
     }
+
 
     private void addTextWatchers() {
         binding.name.addTextChangedListener(new AppTextSeparatedWatcher(s -> dataItem.setName(s.toString())));
@@ -145,6 +128,7 @@ public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultL
     @Override
     public void onDialogResult(String result) {
         adapter.clear();
+        Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show();
         ArrayList<String> list = model.getCategoryList();
         list.add(result);
         adapter.addAll(list);

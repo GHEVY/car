@@ -37,12 +37,12 @@ public class SearchFilter extends BottomSheetDialogFragment {
         model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         addTextChangedListeners();
-        SpinnerAdapter adapter = new SpinnerAdapter(requireContext(),R.layout.spinner_item);
+        SpinnerAdapter adapter = new SpinnerAdapter(requireContext(), R.layout.spinner_item);
         adapter.addAll(getStrings());
         adapter.setDropDownViewResource(R.layout.spinner_menu);
         binding.type.setAdapter(adapter);
         binding.search.setOnClickListener(v -> {
-            DialogFragment dialogFragment = FindDialog.newInstance(model.findItem(name, start, end, category, (String) binding.type.getSelectedItem()));
+            DialogFragment dialogFragment = FoundDialog.newInstance(model.findItem(name, start, end, category, (String) binding.type.getSelectedItem()));
             dialogFragment.show(getParentFragmentManager(), SearchFilter.class.getSimpleName());
             dialogFragment.setTargetFragment(getParentFragment(), 0);
             dismiss();
@@ -62,9 +62,17 @@ public class SearchFilter extends BottomSheetDialogFragment {
 
     private void addTextChangedListeners() {
         binding.name.addTextChangedListener(new AppTextSeparatedWatcher(s -> name = s.toString()));
-        binding.start.addTextChangedListener(new AppTextSeparatedWatcher(s -> start = Integer.parseInt(s.toString())));
-        binding.end.addTextChangedListener(new AppTextSeparatedWatcher(s -> end = Integer.parseInt(s.toString())));
         binding.category.addTextChangedListener(new AppTextSeparatedWatcher(s -> category = s.toString()));
+        binding.start.addTextChangedListener(new AppTextSeparatedWatcher(s -> {
+            if(!s.toString().isEmpty()){
+                start = Integer.parseInt(s.toString());
+            }
+        }));
+        binding.end.addTextChangedListener(new AppTextSeparatedWatcher(s -> {
+            if(!s.toString().isEmpty()){
+                end= Integer.parseInt(s.toString());
+            }
+        }));
     }
 
     @Override

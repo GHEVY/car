@@ -1,6 +1,5 @@
 package com.example.car;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,13 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityViewModel mainModel;
     private ActivityMainBinding binding;
 
-    //    @StringRes
-//    private final int[] pageNameResArr = new int[]{
-//           R.string.oil,
-//           R.string.filter,
-//           R.string.parts
-//    };
-//
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,15 +43,12 @@ public class MainActivity extends AppCompatActivity {
         closeMenu();
 
         binding.viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), getLifecycle()));
-        @SuppressLint("UseCompatLoadingForDrawables")
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
-            //tab.setText(getString(pageNameResArr[position]));
             tab.setText(getString(mainModel.getString(position)));
             tab.setIcon(mainModel.getDrawable(position));
         });
         tabLayoutMediator.attach();
 
-        binding.viewPager.setOffscreenPageLimit(2);
         binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -147,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                     .addToBackStack(null)
                                     .commit();
                         } else if (currentRequest == SCAN_FOR_FIND_CODE) {
-                            DialogFragment dialogFragment = FindDialog.newInstance(resultContents);
+                            DialogFragment dialogFragment = FoundDialog.newInstance(resultContents);
                             dialogFragment.show(getSupportFragmentManager(), "TAG");
                         } else {
                             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();

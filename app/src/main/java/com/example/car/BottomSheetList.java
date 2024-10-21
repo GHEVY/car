@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,23 +39,14 @@ public class BottomSheetList extends BottomSheetDialogFragment{
         binding = BottomSheetListBinding.inflate(getLayoutInflater());
         model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         DataType type = DataType.valueOf(getArguments().getString(TYPE));
-        Toast.makeText(requireContext(), type.toString(),Toast.LENGTH_SHORT).show();
-
-//        Toast.makeText(requireContext(), model.getItem(type).size(), Toast.LENGTH_SHORT).show();
-        adapter = new RecyclerViewAdapter(model.getItem(type), new RecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(DataItem dataItem) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(ITEM, dataItem);
-                getParentFragmentManager().setFragmentResult(KEY, bundle);
-                dismiss();
-            }
-
+        adapter = new RecyclerViewAdapter(model.getItem(type), dataItem -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(ITEM, dataItem);
+            getParentFragmentManager().setFragmentResult(KEY, bundle);
+            dismiss();
         });
         binding.recView.setAdapter(adapter);
         binding.recView.setLayoutManager(new LinearLayoutManager(requireContext()));
         return binding.getRoot();
     }
-
-
 }

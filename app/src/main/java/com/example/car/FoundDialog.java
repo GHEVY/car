@@ -10,38 +10,38 @@ import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.car.data.DataItem;
 import com.example.car.data.DataType;
-import com.example.car.databinding.FoundBinding;
+import com.example.car.databinding.FoundDialogBinding;
 import com.example.car.utils.SharedViewModel;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class FindDialog extends DialogFragment {
+public class FoundDialog extends BottomSheetDialogFragment {
     private static final String ID_KEY = "ID";
     private static final String LIST_KEY = "list";
     private static final String KEY = "key";
-    private FoundBinding binding;
+    private FoundDialogBinding binding;
     private SharedViewModel model;
 
-    public static FindDialog newInstance(String id) {
+    public static FoundDialog newInstance(String id) {
         Bundle args = new Bundle();
         args.putString(ID_KEY, id);
         args.putString(KEY,"id");
-        FindDialog fragment = new FindDialog();
+        FoundDialog fragment = new FoundDialog();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static FindDialog newInstance(ArrayList<DataItem> list) {
+    public static FoundDialog newInstance(ArrayList<DataItem> list) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(LIST_KEY, list);
         args.putString(KEY,"list");
-        FindDialog fragment = new FindDialog();
+        FoundDialog fragment = new FoundDialog();
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,7 +49,7 @@ public class FindDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FoundBinding.inflate(getLayoutInflater());
+        binding = FoundDialogBinding.inflate(getLayoutInflater());
         return binding.getRoot();
     }
 
@@ -77,11 +77,11 @@ public class FindDialog extends DialogFragment {
                 if (newItem != null) {
                     if (newItem.getCount() != -1 && newItem.getSellPrice() != -1) {
                         if (newItem.getType() == DataType.OIL) {
-                            binding.count.setText(newItem.getCount() + "liter");
+                            binding.count.setText(getString(R.string.left) +" " +newItem.getCount() + " " + getString(R.string.liters));
                         } else {
-                            binding.count.setText(newItem.getCount() + "hat");
+                            binding.count.setText(getString(R.string.left) + " " + newItem.getCount() +" " + getString(R.string.piece));
                         }
-                        binding.price.setText(newItem.getSellPrice() + "$");
+                        binding.price.setText(getString(R.string.price )+ " " + newItem.getSellPrice() + "$");
                     } else {
                         binding.count.setText("");
                         binding.price.setText("");
@@ -100,8 +100,6 @@ public class FindDialog extends DialogFragment {
         super.onStart();
         if (getDialog() != null) {
             WindowManager.LayoutParams params = Objects.requireNonNull(getDialog().getWindow()).getAttributes();
-            params.height = 1600;
-            params.width = 900;
             getDialog().getWindow().setAttributes(params);
         }
     }
@@ -117,14 +115,14 @@ public class FindDialog extends DialogFragment {
             } else {
                 binding.spinner.setVisibility(View.GONE);
                 binding.price.setVisibility(View.GONE);
-                binding.count.setText(R.string.noitem);
+                binding.count.setText(R.string.no_item);
             }
         } else if (Objects.equals(getArguments().getString(KEY), "list") && getArguments().getParcelableArrayList(LIST_KEY) != null) {
             list = getArguments().getParcelableArrayList(LIST_KEY);
         } else {
             binding.spinner.setVisibility(View.GONE);
             binding.price.setVisibility(View.GONE);
-            binding.count.setText(R.string.noitem);
+            binding.count.setText(R.string.no_item);
         }
         return list;
     }

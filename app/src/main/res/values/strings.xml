@@ -14,9 +14,14 @@
     <string name="buy_price">Buy price</string>
     <string name="sell_price">Sell price</string>
     <string name="write_category">Category</string>
-    <string name="noitem">Empty</string>
+    <string name="no_item">Empty</string>
     <string name="search">Search</string>
     <string name="type">Choose a type</string>
+    <string name="left">Remaining`</string>
+    <string name="price">Price`</string>
+    <string name="piece">pieces</string>
+    <string name="liters">liters</string>
+    <string name="all_required">All fields are required</string>
 
 
 </resources>

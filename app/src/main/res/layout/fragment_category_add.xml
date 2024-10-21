@@ -7,8 +7,10 @@
 
     <EditText
         android:id="@+id/category_write"
+        android:layout_marginTop="@dimen/margin_6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/spinner_item_background"
         android:layout_marginHorizontal="@dimen/margin_16"
         android:layout_marginBottom="@dimen/margin_26"
         android:hint="@string/write_category" />

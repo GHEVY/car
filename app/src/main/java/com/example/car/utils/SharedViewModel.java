@@ -4,12 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.car.R;
 import com.example.car.data.DataItem;
 import com.example.car.data.DataType;
 import com.example.car.database.DBHelper;
@@ -42,21 +40,7 @@ public class SharedViewModel extends ViewModel {
         return new ArrayList<>(list);
     }
 
-    public ArrayList<String> getNames(DataType type) {
-        ArrayList<String> list = new ArrayList<>();
-        if (type != null) {
-            try (MyCursorWrapper cursor = query()) {
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast()) {
-                    if (cursor.getItem().getType().toString().equals(type.toString())) {
-                        list.add(cursor.getItem().getName());
-                    }
-                    cursor.moveToNext();
-                }
-            }
-        }
-        return list;
-    }
+
 
 
     public ArrayList<DataItem> getItem(DataType type) {

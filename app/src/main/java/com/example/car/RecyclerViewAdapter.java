@@ -52,10 +52,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 listener.onItemClick(dataItemList.get(position));
             }
         });
-//        Toast.makeText(requireContext(), dataItem.getName(), Toast.LENGTH_SHORT).show();
-//        Toast.makeText(requireContext(), dataItem.getCount(), Toast.LENGTH_SHORT).show();
-//        Toast.makeText(requireContext(), dataItem.getBuyPrice()+"\n", Toast.LENGTH_SHORT).show();
-
     }
 
 
