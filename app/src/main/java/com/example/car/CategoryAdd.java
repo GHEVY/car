@@ -35,7 +35,7 @@ public class CategoryAdd extends DialogFragment {
         listener = (OnDialogResultListener) getTargetFragment();
         binding.categoryWrite.addTextChangedListener(new AppTextSeparatedWatcher(new AppTextSeparatedWatcher(s -> category = s.toString())));
         binding.save.setOnClickListener(v -> {
-            if(container!=null) {
+            if(category!=null) {
                 sendResult(category);
                 dismiss();
             }

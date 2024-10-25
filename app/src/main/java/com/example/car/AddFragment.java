@@ -21,7 +21,6 @@ import com.example.car.utils.AppTextSeparatedWatcher;
 import com.example.car.utils.SharedViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultListener {
     private static final String ARG_KEY = "args";
@@ -57,11 +56,10 @@ public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        adapter = new SpinnerAdapter(requireContext(), R.layout.spinner_item);
+        adapter = new SpinnerAdapter(requireContext(), R.layout.spinner_item_container);
         adapter.addAll(model.getCategoryList());
-        adapter.setDropDownViewResource(R.layout.spinner_menu);
+        adapter.setDropDownViewResource(R.layout.item_with_gradient);
         binding.category.setAdapter(adapter);
-
         assert getArguments() != null;
         dataItem = new DataItem();
         dataItem.setType(DataType.valueOf(getArguments().getString(ARG_KEY)));
@@ -79,13 +77,14 @@ public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultL
         addTextWatchers();
 
         binding.save.setOnClickListener(v -> {
-            int count =0;
+            int count = 0;
             boolean[] booleans = {
                     dataItem.getName() == null,
                     dataItem.getCount() == -1,
                     dataItem.getBuyPrice() == -1,
                     dataItem.getSellPrice() == -1,
-                    binding.category.getSelectedItem() == null};
+                    binding.category.getSelectedItem().equals(" ")
+            };
             View[] views = {
                     binding.name,
                     binding.count,
@@ -96,16 +95,13 @@ public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultL
             for (int i = 0; i < booleans.length; i++) {
                 if (booleans[i]) {
                     showError(views[i]);
-                }
-                else
-                    count++;
+                } else count++;
             }
-            if(count == 5){
+            if (count == 5) {
                 dataItem.setCategory(binding.category.getSelectedItem().toString());
                 model.addToDB(dataItem);
                 getParentFragmentManager().popBackStack();
-            }
-            else {
+            } else {
                 Toast.makeText(requireContext(), getString(R.string.all_required), Toast.LENGTH_SHORT).show();
             }
         });
@@ -128,7 +124,6 @@ public class AddFragment extends Fragment implements CategoryAdd.OnDialogResultL
     @Override
     public void onDialogResult(String result) {
         adapter.clear();
-        Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show();
         ArrayList<String> list = model.getCategoryList();
         list.add(result);
         adapter.addAll(list);

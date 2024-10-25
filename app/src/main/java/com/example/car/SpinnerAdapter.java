@@ -37,15 +37,15 @@ public class SpinnerAdapter extends ArrayAdapter<String> {
     @SuppressLint("UseCompatLoadingForDrawables")
     public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.spinner_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.spinner_item_container, parent, false);
         }
         TextView textView = convertView.findViewById(R.id.text_view);
         textView.setText(items.get(position));
 
         if (position == 0) {
-            textView.setBackground(getContext().getDrawable(R.drawable.footer));
+            textView.setBackground(getContext().getDrawable(R.drawable.without_gradient));
         } else {
-            textView.setBackground(getContext().getDrawable(R.drawable.spinner_menu));
+            textView.setBackground(getContext().getDrawable(R.drawable.with_gradient));
         }
 
         return convertView;

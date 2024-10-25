@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,8 @@ public class FoundDialog extends BottomSheetDialogFragment {
     private static final String KEY = "key";
     private FoundDialogBinding binding;
     private SharedViewModel model;
+    private int count = 1;
+    private int item_count;
 
     public static FoundDialog newInstance(String id) {
         Bundle args = new Bundle();
@@ -63,8 +66,9 @@ public class FoundDialog extends BottomSheetDialogFragment {
         for (DataItem item : list) {
             nameList.add(item.getName());
         }
-        SpinnerAdapter adapter = new SpinnerAdapter(requireContext(), R.layout.spinner_item);
-        adapter.setDropDownViewResource(R.layout.spinner_menu);
+        updateCount();
+        SpinnerAdapter adapter = new SpinnerAdapter(requireContext(), R.layout.spinner_item_container);
+        adapter.setDropDownViewResource(R.layout.item_with_gradient);
         binding.spinner.setAdapter(adapter);
         adapter.addAll(nameList);
 
@@ -82,6 +86,7 @@ public class FoundDialog extends BottomSheetDialogFragment {
                             binding.count.setText(getString(R.string.left) + " " + newItem.getCount() +" " + getString(R.string.piece));
                         }
                         binding.price.setText(getString(R.string.price )+ " " + newItem.getSellPrice() + "$");
+                        item_count = newItem.getCount();
                     } else {
                         binding.count.setText("");
                         binding.price.setText("");
@@ -94,6 +99,21 @@ public class FoundDialog extends BottomSheetDialogFragment {
                 binding.price.setVisibility(View.INVISIBLE);
             }
         });
+        binding.add1.setOnClickListener(v -> {
+            if(count<item_count){
+                count++;
+                updateCount();
+            }
+        });
+        binding.sub1.setOnClickListener(v -> {
+            if(count>1){
+                count--;
+                updateCount();
+            }
+        });
+        binding.buy.setOnClickListener(v ->
+                Toast.makeText(requireContext(), "You bought " + count + " ", Toast.LENGTH_SHORT).show());
+
     }
 
     public void onStart() {
@@ -102,6 +122,9 @@ public class FoundDialog extends BottomSheetDialogFragment {
             WindowManager.LayoutParams params = Objects.requireNonNull(getDialog().getWindow()).getAttributes();
             getDialog().getWindow().setAttributes(params);
         }
+    }
+    public void updateCount() {
+        binding.buyCount.setText(String.valueOf(count));
     }
     @Nullable
     private ArrayList<DataItem> getDataItems() {

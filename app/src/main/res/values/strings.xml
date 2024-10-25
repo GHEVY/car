@@ -22,6 +22,8 @@
     <string name="piece">pieces</string>
     <string name="liters">liters</string>
     <string name="all_required">All fields are required</string>
+    <string name="buy">Buy</string>
+
 
 
 </resources>

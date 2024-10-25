@@ -37,9 +37,9 @@ public class SearchFilter extends BottomSheetDialogFragment {
         model = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         addTextChangedListeners();
-        SpinnerAdapter adapter = new SpinnerAdapter(requireContext(), R.layout.spinner_item);
+        SpinnerAdapter adapter = new SpinnerAdapter(requireContext(), R.layout.spinner_item_container);
         adapter.addAll(getStrings());
-        adapter.setDropDownViewResource(R.layout.spinner_menu);
+        adapter.setDropDownViewResource(R.layout.item_with_gradient);
         binding.type.setAdapter(adapter);
         binding.search.setOnClickListener(v -> {
             DialogFragment dialogFragment = FoundDialog.newInstance(model.findItem(name, start, end, category, (String) binding.type.getSelectedItem()));

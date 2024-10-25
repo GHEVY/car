@@ -22,5 +22,6 @@
     <string name="piece">штук</string>
     <string name="liters">литров</string>
     <string name="all_required">Все поля обязательны.</string>
+    <string name="buy">Купить</string>
 
 </resources>

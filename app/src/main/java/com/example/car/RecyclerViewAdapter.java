@@ -1,13 +1,10 @@
 package com.example.car;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,9 +40,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         DataItem item = dataItemList.get(position);
         holder.textViewModel.setText(item.getName());
         if (position == 0) {
-            holder.textViewModel.setBackgroundResource(R.drawable.footer);
+            holder.textViewModel.setBackgroundResource(R.drawable.without_gradient);
         } else {
-            holder.textViewModel.setBackgroundResource(R.drawable.spinner_menu);
+            holder.textViewModel.setBackgroundResource(R.drawable.with_gradient);
         }
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
